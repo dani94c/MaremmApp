@@ -4,7 +4,7 @@ Modify the [application.properties file](https://github.com/dani94c/MaremmApp/bl
 **** Pay attention to not add spaces between equals and at the end of each line!! ****
 
 More in detail:
-- Set the connection parameters for the RemoteServerRMI node that exports the RMI
+- Set the connection parameters for the RemoteServerRMI node that exports the RMI\
 '''
 utils.remoteServerIP=<REMOTE_SERVER_IP>
 utils.remoteServerPort=<REMOTE_SERVER_PORT>
