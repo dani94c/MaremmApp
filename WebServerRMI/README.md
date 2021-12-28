@@ -1,6 +1,6 @@
 ## Web Server Setup
 
-Modify the src/main/resources/application.properties in order to specify connections parameters
+Modify the src/main/resources/application.properties in order to specify connections parameters.
 **** Pay attention to not add spaces between equals and at the end of each line!! ****
 
 More in detail:
