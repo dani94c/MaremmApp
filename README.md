@@ -18,7 +18,7 @@ Maremmapp is built as Spring Web Application that is formed by the following nod
 
 ## Deployment
 In order to deploy the application configure and start the nodes in the following order:
-1) MySQL DB and Erlang Node -> Erlang execution instructions are described [here]().
+1) MySQL DB and Erlang Node -> Erlang execution instructions are described [here](https://github.com/dani94c/MaremmApp/blob/main/ErlangServer/README.md).
 2) RemoteServerRMI -> Execution instructions are described [here](https://github.com/dani94c/MaremmApp/blob/main/RemoteServerRMI/README.md).
 3) WebServerRMI -> Execution instructions are described [here](https://github.com/dani94c/MaremmApp/blob/main/WebServerRMI/README.md).
 
