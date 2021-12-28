@@ -6,7 +6,7 @@ Move inside the folder ErlangServer
 ```
 Create a folder which will contain all the database data (to do only at the first start up of the erlang node):
 ```sh
-mkdir MnesiaDB
+>mkdir MnesiaDB
 ```
 Open an erlang shell configuring parameters for the distributed communication and the MnesiaDB usage:
 ```sh
