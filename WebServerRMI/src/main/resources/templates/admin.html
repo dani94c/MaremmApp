@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    	<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+	    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+	    <script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+	    <link rel="stylesheet" href="webjars/bootstrap/4.0.0-2/css/bootstrap.min.css" />
+	    <link rel="stylesheet" type="text/css" media="all" href="../static/bootstrapStyle.css" th:href="@{/bootstrapStyle.css}"/>
+        <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}"/>
+        <link rel="shortcut icon" href="#">
+        <title>Event planner page</title> 
+        
+        <script type="text/javascript">
+	        $(document).ready(function() {
+	        	$('#myModal').on('show.bs.modal', function (event) {
+	        		var modal = $(this)
+	        		var button = $(event.relatedTarget);
+	        		// change the modal title according to the button clicked
+	        		if(button.context.id == "newEventBtn")
+	        			modal.find($('.modal-header h5').html("Create an event"));
+	        		else
+	        			modal.find($('.modal-header h5').html("Edit an event"));
+	        		// set all the fields when thew admin wats to modify an event
+	        		var data = button.data('userid');
+        			modal.find('.modal-body #userid').val(data);
+        			data = button.data('date');
+        			modal.find('.modal-body #date').val(data);
+        			data = button.data('title');
+        			modal.find('.modal-body #title').val(data);
+        			data = button.data('description');
+        			modal.find('.modal-body #description').val(data);
+        			data = button.data('seats');
+        			modal.find('.modal-body #seats').val(data);
+        			data = button.data('avail');
+        			modal.find('.modal-body #availSeats').val(data);
+	        		// set the event id in the hidden input
+	        		var eventid = button.data('id');
+		        	modal.find('.modal-body #id').val(eventid);
+		        	// disabled past days in datepicker
+		        	var today = new Date();
+		        	today = today.toISOString().split('T')[0];
+		        	var calendar = document.getElementById("date");
+		        	calendar.setAttribute("min",today);
+	        	});
+	        });
+    	</script>
+        
+    </head>
+	<body>
+		<!-- container provides a responsive fixed width container -->
+		<div class="container-fluid"> 
+			<div th:if="${param.success}" class="alert alert-success" role="alert">Transaction Successful</div>
+			<div th:if="${param.error}" class="alert alert-danger" role="alert">Internal error</div>
+			<div th:if="${param.badid}" class="alert alert-danger" role="alert">Inserted Customer doesen't exist!</div>
+			<div th:if="${param.badseats}" class="alert alert-danger" role="alert">Bad numbers in seats and available seats!</div>
+		<!-- A card is a flexible and extensible content container. It includes options for headers and footers,
+		 a wide variety of content, contextual background colors, and powerful display options -->
+			<div class="card">
+				<!-- body of the card -->
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-6">
+							<h5 th:text="'Welcome back ' + ${name}" ></h5>
+						</div>
+						<div class="col-sm-6 text-right">
+							<form th:action="@{/logout}" method="post">
+						        <input class="btn btn-link" type="submit" value="Sign Out"/>
+						    </form>
+							<p><a th:href="@{/feedback}">Feedback Page</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<h1 class="card-title text-center">Event List</h1>
+					<div class="card-body">
+						<button id="newEventBtn" class="btn btn-success btn-lg" type="button" data-toggle="modal" data-target="#myModal">New Event</button>
+					</div>
+					<table class="table table-hover">
+						<thead>
+							<tr class="d-flex">
+								<th class="col-1">ID</th>
+								<th class="col-1">Owner ID</th>
+								<th class="col-1">Owner</th>
+								<th class="col-1">Title</th>
+								<th class="col-3">Description</th>
+								<th class="col-1">Date</th>
+								<th class="col-1">Seats</th>
+								<th class="col-1">Avail Seats</th>
+								<th class="col-2"></th>
+							</tr>
+						</thead>
+						<tbody>
+						<!-- In Main controler i put in eventData all the events present in the db. 
+						I put then in the event object used to access to all the fields in the event.
+						In Thymeleaf, iteration is achieved by using the th:each attribute.
+						 -->
+							<tr th:each="eventData :${eventsData}" class="d-flex"> 
+								<td th:text="${eventData.id}" data-id="${eventData.id}" class="col-1"></td>
+								<td th:text="${eventData.user.userID}" class="col-1"></td>
+								<td th:text="${eventData.user.username}" class="col-1"></td>
+								<td th:text="${eventData.title}" class="col-1"></td>
+								<td th:text="${eventData.description}" class="col-3"></td>
+								<td th:text="${eventData.date}" class="col-1"></td>
+								<td th:text="${eventData.seats}" class="col-1"></td>
+								<td th:text="${eventData.availSeats}" class="col-1"></td>
+								<td class="col-2">
+									<!-- th:attr="data-id=$..." is needed in order to pass the event id to the modal through javascript-->
+									<button id="editEventBtn" 
+									th:attr="data-id=${eventData.id}, data-userid=${eventData.user.userID}, data-title=${eventData.title},
+										data-description=${eventData.description}, data-date=${eventData.date}, data-seats=${eventData.seats}, data-avail=${eventData.availSeats}" 
+											class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Edit</button>
+									<a th:href="@{deleteEvent(id=${eventData.id})}" class="btn btn-danger btn-lg" type="button">Delete</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>	
+			</div>				
+		</div>
+		
+		<div class="myForm">
+				<form th:action="@{/saveEvent}" method="post">
+					<!-- Modal -->
+					<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<!-- Modal content-->
+					    	<div class="modal-content">
+					      		<div class="modal-header">
+					        		<h5 class="modal-title" id="modelTitle">Create an Event</h5>
+					        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          		<span aria-hidden="true">&times;</span>
+					        		</button>
+					      		</div>
+					      		<div class="modal-body">
+					      			<div class="form-group">
+					            		<input type="hidden" class="form-control" id="id" name="id" value="" />
+					          		</div>
+					          		<div class="form-group">
+					            		<label for="title" class="col-form-label">User id:</label>
+					            		<input type="text" class="form-control" id="userid" name="user.userID" value="" required autofocus/>
+					          		</div>
+					        		<div class="form-group">
+					            		<label for="title" class="col-form-label">Title:</label>
+					            		<input type="text" class="form-control" id="title" name="title" value="" required/>
+					          		</div>
+					          		<div class="form-group">
+					            		<label for="description" class="col-form-label">Description:</label>
+					            		<input type="text" class="form-control" id="description" name="description" value="" required/>
+					          		</div>
+					          		<div class="form-group">
+					            		<label for="date" class="col-form-label">Date:</label>
+					            		<input type="date" class="form-control" id="date" name="date" value="" required/>
+					          		</div>
+					          		<div class="form-group">
+					            		<label for="seats" class="col-form-label">Seats:</label>
+					            		<input type="text" class="form-control" id="seats" name="seats" value="" required/>
+					          		</div>
+					          		<div class="form-group">
+					            		<label for="availSeats" class="col-form-label">Available Seats:</label>
+					            		<input type="text" class="form-control" id="availSeats" name="availSeats" value="" required/>
+					          		</div>
+								</div>
+					      		<div class="modal-footer">
+					        		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        		<!--  The <input type="submit"> defines a submit button which submits all form values to a form-handler.
+										The form-handler is typically a server page with a script for processing the input data.
+										The form-handler is specified in the form's action attribute. -->
+					        		<input type="submit" class="btn btn-primary" value="Submit"/>
+					      		</div>
+					    	</div>
+					  	</div>
+					</div>
+				</form>
+			</div>	
+    </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Customer page</title>
+       	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+       	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+	    <script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="webjars/bootstrap/4.0.0-2/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../static/bootstrapStyle.css" th:href="@{/bootstrapStyle.css}"/>
+        <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}"/> 
+        
+    </head>
+	<body>
+        <div class="container-fluid">
+        
+	        <div class="card">
+	        
+				<div class="card-body">	        	
+		        	<div class="row">
+	        			<div class="col-sm-6">
+			        		<h5 th:text="'Welcome back ' + ${name}" ></h5>
+			        	</div>
+			        	<div class="col-sm-6 text-right">	
+							<form th:action="@{/logout}" method="post">
+						        <input class="btn btn-link" type="submit" value="Sign Out"/>
+						    </form>
+						    <p><a th:href="@{/feedback}">Feedback Page</a></p>
+						</div>
+		           	</div>
+	           	</div>
+	           	
+	           	<div class="card-body">
+			  		<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Choose Table</button>
+			
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					    <a class="dropdown-item" href="/customer?tableType=myReservation">My Reservations</a>
+					   	<a class="dropdown-item" href="/customer?tableType=futureEvents">Search for a New Event</a>
+		       		</div>
+				</div>
+			
+			</div>
+			
+			<div th:if="${param.success}" class="alert alert-success" role="alert">Transaction Successful</div>
+			<div th:if="${param.error}" class="alert alert-danger" role="alert">Internal error</div>
+			<div th:if="${param.noseats}" class="alert alert-danger" role="alert">Event full</div>
+			<div th:if="${param.retryBook}" class="alert alert-danger" role="alert">Error trying to book the event. Please retry</div>
+			<div th:if="${param.retryCancel}" class="alert alert-danger" role="alert">Error trying to delete the reservation. Please retry</div>
+        	<div class="card">
+        		
+        		<div th:if="${tableType == 'myReservation'}" class="card-block">
+        			<table class="table table-hover">
+        				<thead>
+        					<tr>
+        						<th>Title</th>
+        						<th>Date</th>
+        						<th>Owner</th>
+        						<th>Description</th>
+        					</tr>
+        				</thead>
+        				<tbody>
+        					<tr th:each="reservation :${data}">
+        						<td th:text="${reservation.event.title}"></td>
+        						<td th:text="${reservation.event.date}"></td>
+        						<td th:text="${reservation.event.user.username}"></td>
+        						<td th:text="${reservation.event.description}"></td>
+        						<td><a th:href="@{deleteReservation(id=${reservation.id})}" class="btn btn-danger btn-lg" type="button">Delete</a></td>
+        					</tr>
+	
+        				</tbody>
+        			
+        			</table>
+        		
+        		
+        		</div>
+        		
+        		<div th:if="${tableType == 'futureEvents'}" class="card-block">
+        			<table class="table table-hover">
+        				<thead>
+        					<tr>
+        						<th>Title</th>
+        						<th>Date</th>
+        						<th>Owner</th>
+        						<th>Description</th>
+        						<th>Available Seats</th>
+        						<th>Total Seats</th>
+        					</tr>
+        				</thead>
+        				<tbody>
+        					<tr th:each="event :${data}"> <!--TEST -->
+        						<td th:text="${event.title}"></td>
+        						<td th:text="${event.date}"></td>
+        						<td th:text="${event.user.username}"></td>
+        						<td th:text="${event.description}"></td>
+        						<td th:text="${event.availSeats}"></td>
+        						<td th:text="${event.seats}"></td>
+        						<td><a th:href="@{saveReservation(id=${event.id})}" class="btn btn-primary btn-lg" type="button">Book</a></td>
+        					</tr>
+	
+        				</tbody>
+        			
+        			</table>
+        		
+        		
+        		</div>
+        	
+        	</div>
+        
+        
+        </div>
+    </body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+        <title>Spring Security Example </title>
+    	<link rel="stylesheet" type="text/css" media="all" href="../static/bootstrapStyle.css" th:href="@{/bootstrapStyle.css}"/>
+        <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}"/> 
+    </head>
+    
+	
+	
+<!--
+	This Thymeleaf template presents a form that captures a username and password and posts 
+	them to /login ( th:action="@{/login}" ). As configured, Spring Security provides a filter that intercepts that request 
+	and authenticates the user. If the user fails to authenticate, the page is redirected to /login?error ( th:if="${param.error}" ), 
+	and your page displays the appropriate error message. Upon successfully signing out, your application is sent 
+	to /login?logout ( th:if="${param.logout}" ), and your page displays the appropriate success message.
+-->
+
+    <body>
+    <div class="container">
+	
+    <form th:action="@{/login}" class="form-signin" method="post">
+    	<h2 class="form-signin-heading">Please sign in</h2>
+		<div th:if="${param.error}" class="alert alert-danger" role="alert">Invalid username and password</div> 
+		<div th:if="${param.logout}" class="alert alert-success" role="alert">You have been signed out</div> 
+		<div th:if="${param.success}" class="alert alert-success" role="alert">You have been registered</div>
+        <p>
+        	<label for="username" class="sr-only">Username</label>
+         	<input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+        </p>
+        <p>
+          	<label for="password" class="sr-only">Password</label>
+          	<input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        </p>
+			<input name="_csrf" type="hidden" value="6788425b-15e5-4c62-9cf3-d4633f471528" />
+        	<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        	<p>New user? Register <a th:href="@{/registration}">HERE</a> !</p>
+      </form>
+</div>    
+</body>
+</html>

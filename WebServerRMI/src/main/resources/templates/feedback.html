@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    	<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+	    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+	    <script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+	    <link rel="stylesheet" href="webjars/bootstrap/4.0.0-2/css/bootstrap.min.css" />
+	    <link rel="stylesheet" type="text/css" media="all" href="../static/bootstrapStyle.css" th:href="@{/bootstrapStyle.css}"/>
+        <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}"/>
+        <link rel="shortcut icon" href="#">
+        <title>Feedback page</title> 
+       
+        
+    </head>
+	<body>
+		<!-- container provides a responsive fixed width container -->
+		<div class="container-fluid"> 
+			<div th:if="${param.success}" class="alert alert-success" role="alert">Transaction Successful</div>
+			<div th:if="${param.error}" class="alert alert-danger" role="alert">Internal error</div>
+		<!-- A card is a flexible and extensible content container. It includes options for headers and footers,
+		 a wide variety of content, contextual background colors, and powerful display options -->
+			<div class="card">
+				<!-- body of the card -->
+				<div class="card-body">	        	
+		        	<div class="row">
+	        			<div class="col-sm-6">
+			        		<h5 th:text="${name}" ></h5>
+			        	</div>
+			        	<div class="col-sm-6 text-right">	
+							<form th:action="@{/logout}" method="post">
+						        <input class="btn btn-link" type="submit" value="Sign Out"/>
+						    </form>
+						    <a class="btn btn-link" th:if="${role == 'ADMIN'}" th:href="@{/admin}">Back</a>
+						    <a class="btn btn-link" th:if="${role == 'CUSTOMER'}" th:href="@{/customer}">Back</a>
+						    <a class="btn btn-link" th:if="${role == 'EVENTPLANNER'}" th:href="@{/eventPlanner}">Back</a>
+						</div>
+		           	</div>
+	           	</div>
+				<div class="card-body">
+					<h1 class="card-title text-center">Feedbacks</h1>
+					<div class="row">
+						<div class="col-sm-6">
+							<button id="newFbBtn" class="btn btn-success btn-lg" type="button" data-toggle="modal" data-target="#myModal">New Feedback</button>
+						</div>
+						<div class="col-sm-6 text-right">
+							<a th:href="@{/feedback?tableType=personal}">My Feedbacks</a>
+						</div>
+					</div>
+					
+					<table class="table table-hover ">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Date</th>
+								<th>Username</th>
+								<th>Message</th>
+								<th th:if="${role == 'ADMIN' OR tableType == 'personal'}"></th>
+							</tr>
+						</thead>
+						<tbody>
+						<!-- In Main controller I matched feedbacksList to a List<Feedback> object with all the feedbacks present in the db. 
+						feedbacksList is then used to dynamically fill the table.
+						Each element of feedbacksList corresponds to a Feedback object (of the retrieved List) that will corresponds to a row of the table.
+						Each field of the Feedback object is then matched to the appropriate column.
+						In Thymeleaf, iteration is achieved by using the th:each attribute.
+						 -->
+							<tr th:each="feedback :${feedbacksList}"> 
+								<td th:text="${feedback.id}" data-id="${feedback.id}"></td>
+								<td th:text="${feedback.date}"></td>
+								<td th:text="${feedback.owner}"></td>
+								<td th:text="${feedback.message}"></td>
+								<td th:if="${role == 'ADMIN' OR tableType == 'personal'}">
+									<a th:href="@{deleteFeedback(tableType=${tableType},id=${feedback.id})}" class="btn btn-danger btn-lg" type="button">Delete</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>	
+			</div>				
+		</div>
+		
+		<div class="myForm">
+				<form th:action="@{/insertFeedback}" method="post">
+					<!-- Modal -->
+					<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<!-- Modal content-->
+					    	<div class="modal-content">
+					      		<div class="modal-header">
+					        		<h5 class="modal-title" id="modelTitle">What about Maremma...</h5>
+					        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          		<span aria-hidden="true">&times;</span>
+					        		</button>
+					      		</div>
+					      		<div class="modal-body">
+					        		<div class="form-group">
+					            		<label for="message" class="col-form-label">Your opinion is important to us! Insert a comment:</label>
+					            		<input type="text" class="form-control" id="message" name="message" value="" required/>
+					          		</div>	
+								</div>
+					      		<div class="modal-footer">
+					        		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        		<!--  The <input type="submit"> defines a submit button which submits all form values to a form-handler.
+										The form-handler is typically a server page with a script for processing the input data.
+										The form-handler is specified in the form's action attribute. -->
+					        		<input type="submit" class="btn btn-primary" value="Submit"/>
+					      		</div>
+					    	</div>
+					  	</div>
+					</div>
+				</form>
+			</div>	
+    </body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<meta name="description" content="">
+		<meta name="author" content="">
+	    <title>Spring Security Example </title>
+		<link rel="stylesheet" type="text/css" media="all" href="../static/bootstrapStyle.css" th:href="@{/bootstrapStyle.css}"/>
+	    <link rel="stylesheet" type="text/css" media="all" href="../static/style.css" th:href="@{/style.css}"/> 
+	</head>
+	<body>
+	
+		<div class="container">
+		<!--th:object is an attribute that holds a command object (main form bean object) that is a form representation 
+		on the backend side.-->
+			<form class="form-signin" th:action="@{/registration}" th:object="${userForm}" method="POST" enctype="utf8">
+				<h1 class="form-signin-heading">Registration</h1>
+			    <div th:if="${param.error}" class="alert alert-danger" role="alert">Already existing username</div>
+			    <p>
+			        <label class="sr-only">Username:</label>
+			        <!--  th:field binding your input with a property in the form-backing bean -->
+					<input type="text" th:field="*{username}" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+			    </p>
+			    <p>
+			        <label class="sr-only">Password:</label>
+					<input type="password" th:field="*{password}" id="password" name="password" class="form-control" placeholder="Password" required>
+			    </p>
+				
+			    <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+			
+				<p>Already registered? Log in <a th:href="@{/login}">HERE</a> !</p>
+			</form>
+		</div>
+	</body>
+</html>

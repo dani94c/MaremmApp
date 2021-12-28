@@ -1,0 +1,5 @@
+RemoteServerRMI/src/main/java/resources/application.properties
+RemoteServerRMI/src/main/java/resources/META-INF/persistence.xml
+RemoteServerRMI/target
+WebServerRMI/target
+*/.DS_Store
