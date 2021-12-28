@@ -11,7 +11,7 @@ utils.remoteServerIP=<REMOTE_SERVER_IP>
 utils.remoteServerPort=<REMOTE_SERVER_PORT>
 ```
 
-- Set the connection parameters for the ErlangClient node that connects to the Erlang Server node.\ 
+- Set the connection parameters for the ErlangClient node that connects to the Erlang Server node. 
   The cookie MUST be the same used on the Erlang Server node
   
 ```
